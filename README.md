@@ -35,7 +35,7 @@ this is an ecosystem comparison, not a source-code security audit._
 | Package | Latest | Published (UTC) | MCP Registry identity | Runtime deps | Notable signals |
 |------|------:|-----------------|----------------------|-------------:|-----------------|
 | **whoop-ai-mcp (this repo)** | **0.6.1** | 2026-08-07 | **✅ `io.github.shashankswe2020-ux/whoop`** | **2** | 14 tools, 4 resources, 5 prompts, analytics, HTTP + stdio, OAuth 2.1 connector |
-| whoop-mcp-unofficial | 0.6.5 | 2026-08-29 | ✅ `io.github.davidmosiah/whoop-mcp` | 5+ | 20+ tools, SQLite cache, privacy modes |
+| whoop-mcp-unofficial | 0.6.5 | 2026-08-29 | ✅ `io.github.davidmosiah/whoop-mcp` | 6 | 20+ tools, SQLite cache, privacy modes |
 | mcp-server-whoop | 0.2.2 | 2026-07-17 | ✅ `io.github.Yadheedhya06/mcp-server-whoop` | 2 | Read-only/local-first, npm provenance, SBOM and security checks |
 | @souravpn/whoop-mcp | 1.0.2 | 2026-05-27 | ✅ `io.github.souravpn/whoop-mcp` | 1 | Simple standalone server with OAuth setup |
 | @nchemb/whoop-mcp | 0.2.0 | 2026-04-27 | — | 4 | Shared OAuth relay and local SQLite cache |
