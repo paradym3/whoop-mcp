@@ -40,7 +40,7 @@ this is an ecosystem comparison, not a source-code security audit._
 | @souravpn/whoop-mcp | 1.0.2 | 2026-05-27 | ✅ `io.github.souravpn/whoop-mcp` | 1 | Simple standalone server with OAuth setup |
 | @nchemb/whoop-mcp | 0.2.0 | 2026-04-27 | — | 4 | Shared OAuth relay and local SQLite cache |
 | whoop-mcp-server | 0.0.5 | 2026-03-13 | — | 2 | WHOOP Developer Platform API server |
-| whoop-mcp | 0.1.2 | 2026-03-11 | — | 1 | xmcp-based server |
+| whoop-mcp | 0.1.2 | 2026-03-11 | — | 1 | Server built with the `xmcp` framework |
 | @roebot0/whoop-mcp | 1.0.0 | 2026-04-06 | — | 3 | Axios-based server and separate auth command |
 | @alacore/whoop-mcp-server | 1.0.1 | 2025-10-09 | — | 2 | API v2 integration; requires pnpm |
 
