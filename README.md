@@ -46,7 +46,7 @@ this is an ecosystem comparison, not a source-code security audit._
 
 **Findings**
 
-- MCP Registry discoverability is now table stakes: three alternatives also
+- MCP Registry discoverability is now table stakes: at least three alternatives also
   publish `mcpName` identities.
 - The leading portability trade-off remains local-first/no-infrastructure
   operation versus richer remote hosting, caching, or relay features.
