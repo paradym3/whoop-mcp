@@ -27,51 +27,51 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that 
 - ⚡ **Zero config** — just add your WHOOP app credentials and go
 - 📦 **Lightweight** — only two runtime dependencies (`@modelcontextprotocol/sdk` + `zod`)
 
-## Quick Comparison (WHOOP MCP packages on npm)
+## SOTA scan (WHOOP MCP packages on npm)
 
-_Based on npm search results for `whoop mcp` on 2026-05-30._
+_Registry snapshot collected 2026-08-30. Versions and publish dates can change;
+this is an ecosystem comparison, not a source-code security audit._
 
-| Package | Latest version | Last publish (UTC) | MCP Registry | Runtime deps | npm |
-|------|-----------------|--------------------|----|--------------|-----|
-| **whoop-ai-mcp (this repo)** | **0.4.0** | **2026-05-31** | **✅ `io.github.shashankswe2020-ux/whoop`** | **2** | https://www.npmjs.com/package/whoop-ai-mcp |
-| whoop-mcp-unofficial | 0.4.5 | 2026-05-29 | — | 5 | https://www.npmjs.com/package/whoop-mcp-unofficial |
-| @nchemb/whoop-mcp | 0.2.0 | 2026-04-27 | — | 4 | https://www.npmjs.com/package/@nchemb/whoop-mcp |
-| @scom82/whoop-mcp | 0.1.0 | 2026-05-17 | — | 1 | https://www.npmjs.com/package/@scom82/whoop-mcp |
-| whoop-mcp-server | 0.0.5 | 2026-03-13 | — | 2 | https://www.npmjs.com/package/whoop-mcp-server |
-| whoop-mcp | 0.1.2 | 2026-03-11 | — | 2 | https://www.npmjs.com/package/whoop-mcp |
-| @roebot0/whoop-mcp | 1.0.0 | 2026-04-06 | — | 3 | https://www.npmjs.com/package/@roebot0/whoop-mcp |
-| @alacore/whoop-mcp-server | 1.0.1 | 2025-10-09 | — | 2 | https://www.npmjs.com/package/@alacore/whoop-mcp-server |
+| Package | Latest | Published (UTC) | MCP Registry identity | Runtime deps | Notable signals |
+|------|------:|-----------------|----------------------|-------------:|-----------------|
+| **whoop-ai-mcp (this repo)** | **0.6.1** | 2026-08-07 | **✅ `io.github.shashankswe2020-ux/whoop`** | **2** | 14 tools, 4 resources, 5 prompts, analytics, HTTP + stdio, OAuth 2.1 connector |
+| whoop-mcp-unofficial | 0.6.5 | 2026-08-29 | ✅ `io.github.davidmosiah/whoop-mcp` | 6 | 20+ tools, SQLite cache, privacy modes |
+| mcp-server-whoop | 0.2.2 | 2026-07-17 | ✅ `io.github.Yadheedhya06/mcp-server-whoop` | 2 | Read-only/local-first, npm provenance, SBOM and security checks |
+| @souravpn/whoop-mcp | 1.0.2 | 2026-05-27 | ✅ `io.github.souravpn/whoop-mcp` | 1 | Simple standalone server with OAuth setup |
+| @nchemb/whoop-mcp | 0.2.0 | 2026-04-27 | — | 4 | Shared OAuth relay and local SQLite cache |
+| whoop-mcp-server | 0.0.5 | 2026-03-13 | — | 2 | WHOOP Developer Platform API server |
+| whoop-mcp | 0.1.2 | 2026-03-11 | — | 1 | Server built with the `xmcp` framework |
+| @roebot0/whoop-mcp | 1.0.0 | 2026-04-06 | — | 3 | Axios-based server and separate auth command |
+| @alacore/whoop-mcp-server | 1.0.1 | 2025-10-09 | — | 2 | API v2 integration; requires pnpm |
+
+**Findings**
+
+- MCP Registry discoverability is now table stakes: at least three alternatives also
+  publish `mcpName` identities.
+- The leading portability trade-off remains local-first/no-infrastructure
+  operation versus richer remote hosting, caching, or relay features.
+- Current best practice is to document security controls, test/verification
+  commands, provenance or SBOM metadata, and the exact transport/auth model.
+  This project provides the first two and supports both local stdio and
+  authenticated Streamable HTTP; it does not claim to be a security audit.
 
 **Why this package stands out**
 
-- Published to npm **and** the official MCP Registry (via `mcpName` metadata)
-- Most feature-rich standalone server: 14 tools + 4 resources + 5 prompts + analytics + auto-pagination
-- Only 2 runtime dependencies (lightest footprint among full-featured options)
-- No external infrastructure required (no SQLite, no Express, no relay servers)
+- 14 domain and analytical tools, 4 ambient resources, and 5 prompts in one
+  standalone package.
+- No database, relay service, or framework runtime dependency; only the MCP SDK
+  and Zod are required.
+- Published to npm and the official MCP Registry, with documented OAuth,
+  token refresh, retries, caching, HTTP hardening, and Inspector verification.
 
-### Deep comparison ratings (WHOOP MCP packages on npm)
+**Evidence and reproducibility:** package names, versions, publish dates,
+dependency counts, descriptions, and `mcpName` values come from the npm Registry
+search and package manifests. Feature notes were checked against each package's
+published metadata/README where available. Re-run the scan with:
 
-_Evidence basis: npm registry metadata + npm-hosted README signals + package manifest fields (`dependencies`, `repository`, `mcpName`) collected on 2026-05-30._
-
-**Scoring dimensions (0–5):**
-
-- **Security & resilience (35%)**: documented OAuth, token refresh, retry/backoff, secure token file permissions (`0600`), no shared relay
-- **Freshness (25%)**: recency of latest npm publish
-- **Docs & verification signals (25%)**: README coverage for OAuth, testing, changelog/release notes, and MCP Inspector usage
-- **Discoverability & portability (15%)**: MCP Registry metadata (`mcpName`), repository metadata present, lean runtime dependency count, no external infra required
-
-> Ratings are documentation/metadata-driven and are **not** a source-code security audit.
-
-| Package | Security & resilience | Freshness | Docs & verification | Discoverability | **Overall** | Key differentiator / gap vs `whoop-ai-mcp` |
-|------|------------------------|-----------|---------------------|-----------------|--------------------|-------------------------------------|
-| **whoop-ai-mcp (this repo)** | **5.0/5** | **5.0/5** | **5.0/5** | **5.0/5** | **5.0/5** | Baseline — MCP Registry, 2 deps, analytics, no external infra |
-| whoop-mcp-unofficial | 4.5/5 | 5.0/5 | 4.0/5 | 3.5/5 | **4.3/5** | Strong feature set (20+ tools, SQLite cache, privacy modes); heavier deps (5: express, better-sqlite3, cors); no `mcpName`; part of "Delx Wellness" ecosystem |
-| @nchemb/whoop-mcp | 3.0/5 | 4.0/5 | 3.5/5 | 2.5/5 | **3.2/5** | Unique shared OAuth relay (no dev app needed); local SQL queries; capped at 10 test users; 4 deps; no `mcpName` |
-| whoop-mcp-server | 3.8/5 | 3.0/5 | 2.5/5 | 3.3/5 | **3.1/5** | No `mcpName`; no Inspector/changelog signal; older publish cadence |
-| @scom82/whoop-mcp | 2.0/5 | 4.5/5 | 2.0/5 | 2.0/5 | **2.5/5** | Requires self-hosted FastAPI backend (`whoop-web`); not standalone; 1 dep but external infra needed |
-| @roebot0/whoop-mcp | 2.5/5 | 4.0/5 | 1.3/5 | 1.7/5 | **2.4/5** | No `0600` docs; no `mcpName`; no explicit testing/changelog signal |
-| @alacore/whoop-mcp-server | 2.5/5 | 2.0/5 | 2.5/5 | 3.3/5 | **2.5/5** | Older publish cadence; no `mcpName`; retry/backoff not documented |
-| whoop-mcp | 0.0/5 | 3.0/5 | 0.0/5 | 3.3/5 | **1.3/5** | OAuth/refresh/retry not documented; no `mcpName` |
+```bash
+curl -s 'https://registry.npmjs.org/-/v1/search?text=whoop%20mcp&size=20'
+```
 
 ## 🎥 Video Walkthrough
 
