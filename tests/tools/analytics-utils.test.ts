@@ -1,6 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+import { z } from "zod";
 import { percentile, circularStats } from "../../src/tools/stats-utils.js";
-import { localDay } from "../../src/tools/analytics-utils.js";
+import { localDay, loadAnalyticsSource } from "../../src/tools/analytics-utils.js";
+import type { WhoopClient } from "../../src/api/client.js";
 
 describe("analytics primitives", () => {
   it("interpolates percentiles without mutating values", () => {
@@ -24,5 +26,47 @@ describe("analytics primitives", () => {
     expect(localDay("2026-09-10T01:00:00Z", "-05:00")).toBe("2026-09-09");
     expect(localDay("2026-03-08T06:30:00Z", "-05:00")).toBe("2026-03-08");
     expect(localDay("2026-11-01T06:30:00Z", "-04:00")).toBe("2026-11-01");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// loadAnalyticsSource's internal `pageSchema` is a THIRD, independent
+// declaration of the same next_token schema that output-contracts.ts's
+// `collection()` has (and record-schemas.ts's optional score fields have) —
+// this is what get_today, get_baselines, get_trend, get_weekly_summary,
+// compare_periods, and get_sleep_debt all fetch through. Before this fix,
+// any of those tools would throw on a request whose data fit on one page,
+// since WHOOP returns `next_token: null` rather than omitting the key.
+// ---------------------------------------------------------------------------
+
+describe("loadAnalyticsSource", () => {
+  const recordSchema = z.object({ id: z.number() });
+
+  function mockClient(response: unknown): WhoopClient {
+    return { get: vi.fn().mockResolvedValue(response) } as unknown as WhoopClient;
+  }
+
+  it("succeeds when the API returns next_token: null (single/last page)", async () => {
+    const client = mockClient({ records: [{ id: 1 }, { id: 2 }], next_token: null });
+    const result = await loadAnalyticsSource(
+      client,
+      "/v2/recovery",
+      { start: "2026-09-25T00:00:00.000Z", end: "2026-09-28T00:00:00.000Z" },
+      recordSchema
+    );
+    expect(result.quality.status).not.toBe("invalid");
+    expect(result.records).toHaveLength(2);
+  });
+
+  it("succeeds when next_token is omitted entirely", async () => {
+    const client = mockClient({ records: [{ id: 1 }] });
+    const result = await loadAnalyticsSource(
+      client,
+      "/v2/recovery",
+      { start: "2026-09-25T00:00:00.000Z", end: "2026-09-28T00:00:00.000Z" },
+      recordSchema
+    );
+    expect(result.quality.status).not.toBe("invalid");
+    expect(result.records).toHaveLength(1);
   });
 });

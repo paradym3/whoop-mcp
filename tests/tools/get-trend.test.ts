@@ -301,6 +301,23 @@ describe("getTrend", () => {
     expect(result.values).toEqual([70, 80]);
   });
 
+  it("excludes sleeps whose sleep_performance_percentage is null", async () => {
+    const baseline = makeSleep("2026-05-25T22:00:00Z", "2026-05-26T06:00:00Z", 85);
+    const sleeps: Sleep[] = [
+      baseline,
+      {
+        ...makeSleep("2026-05-26T22:00:00Z", "2026-05-27T06:00:00Z"),
+        score: { ...baseline.score!, sleep_performance_percentage: null },
+      },
+      makeSleep("2026-05-27T22:00:00Z", "2026-05-28T06:00:00Z", 90),
+    ];
+    getMock.mockResolvedValueOnce(paginated(sleeps));
+
+    const result = await getTrend(client, { metric: "sleep_performance" });
+
+    expect(result.values).toEqual([85, 90]);
+  });
+
   it("defaults to 30 days when days not specified", async () => {
     getMock.mockResolvedValueOnce(
       paginated([

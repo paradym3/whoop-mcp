@@ -151,10 +151,7 @@ const METRIC_CONFIGS: Record<TrendMetric, MetricConfig> = {
     extract: (records: unknown[]) => {
       const typed = records as Sleep[];
       const scored = typed.filter(
-        (s) =>
-          s.score_state === "SCORED" &&
-          s.score?.sleep_performance_percentage !== undefined &&
-          !s.nap
+        (s) => s.score_state === "SCORED" && s.score?.sleep_performance_percentage != null && !s.nap
       );
       return {
         values: scored.map((s) => s.score!.sleep_performance_percentage!),

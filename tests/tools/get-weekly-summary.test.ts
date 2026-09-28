@@ -266,6 +266,36 @@ describe("getWeeklySummary", () => {
     expect(result.sleep.average_efficiency_pct).toBeCloseTo(84, 1);
   });
 
+  it("excludes null sleep performance and efficiency from averages", async () => {
+    const baseScore = makeSleep().score!;
+    const sleeps = [
+      makeSleep({ id: "sleep-1" }),
+      makeSleep({
+        id: "sleep-2",
+        score: {
+          ...baseScore,
+          sleep_performance_percentage: null,
+          sleep_efficiency_percentage: null,
+        },
+      }),
+      makeSleep({
+        id: "sleep-3",
+        score: { ...baseScore, sleep_performance_percentage: 75, sleep_efficiency_percentage: 80 },
+      }),
+    ];
+
+    getMock
+      .mockResolvedValueOnce(paginated([])) // recovery
+      .mockResolvedValueOnce(paginated(sleeps)) // sleep
+      .mockResolvedValueOnce(paginated([])) // workout
+      .mockResolvedValueOnce(paginated([])); // cycle
+
+    const result = await getWeeklySummary(client, {});
+
+    expect(result.sleep.average_performance_pct).toBeCloseTo(80, 1);
+    expect(result.sleep.average_efficiency_pct).toBeCloseTo(84, 1);
+  });
+
   it("computes correct workout stats with sport breakdown", async () => {
     const workouts = [
       makeWorkout({
