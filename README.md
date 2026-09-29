@@ -97,6 +97,14 @@ See [data handling](references/privacy.md) and [telemetry controls](references/t
 
 </details>
 
+## Star History
+
+<p align="center">
+	<a href="https://www.star-history.com/#shashankswe2020-ux/whoop-mcp&Date">
+		<img src="https://api.star-history.com/svg?repos=shashankswe2020-ux/whoop-mcp&type=Date" alt="WHOOP MCP GitHub star history chart">
+	</a>
+</p>
+
 ## Build With Us
 
 Found a useful question, a missing workflow or an integration worth sharing?
