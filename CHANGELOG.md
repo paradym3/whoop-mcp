@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- The HTTP transport returns 400 Bad Request for a malformed `Host` header or
+  request URL instead of crashing the server process.
+
 ## [0.8.4] - 2026-09-23
 
 ### Fixed

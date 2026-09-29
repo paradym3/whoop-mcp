@@ -278,7 +278,16 @@ export async function createHttpServer(options: HttpServerOptions): Promise<Http
 
   // Create HTTP server
   const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
-    const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+    // The request target and Host header are client-controlled; a malformed
+    // value makes `new URL` throw, which would otherwise reject this async
+    // handler and crash the process.
+    let url: URL;
+    try {
+      url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+    } catch {
+      sendJson(res, 400, { error: "Bad Request", message: "Invalid request URL or Host header" });
+      return;
+    }
     const pathname = url.pathname;
 
     // CORS handling
