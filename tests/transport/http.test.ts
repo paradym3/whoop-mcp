@@ -7,6 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import http from "node:http";
+import net from "node:net";
 import {
   safeTokenCompare,
   createHttpServer,
@@ -55,6 +56,32 @@ function request(
       req.write(options.body);
     }
     req.end();
+  });
+}
+
+/**
+ * Send a raw HTTP/1.1 request over a TCP socket and return the status line.
+ * Used for inputs that `http.request` refuses to send (e.g. a malformed Host).
+ * Resolves with an empty string if the server never answers.
+ */
+function rawRequest(server: http.Server, raw: string, timeoutMs = 2000): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const addr = server.address();
+    if (!addr || typeof addr === "string") {
+      reject(new Error("Server not listening"));
+      return;
+    }
+    let data = "";
+    const socket = net.connect(addr.port, "127.0.0.1", () => socket.write(raw));
+    const timer = setTimeout(() => socket.destroy(), timeoutMs);
+    socket.on("data", (chunk: Buffer) => {
+      data += chunk.toString();
+    });
+    socket.on("error", reject);
+    socket.on("close", () => {
+      clearTimeout(timer);
+      resolve(data.split("\r\n")[0] ?? "");
+    });
   });
 }
 
@@ -430,6 +457,37 @@ describe("HTTP Server", () => {
     it("returns 404 for unknown paths", async () => {
       const res = await request(server, "/unknown");
       expect(res.status).toBe(404);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Malformed request URL / Host header
+  // ---------------------------------------------------------------------------
+
+  describe("malformed request URL", () => {
+    beforeEach(async () => {
+      const result = await createHttpServer(defaultOptions);
+      server = result.server;
+      cleanup = result.close;
+    });
+
+    it.each([
+      ["Host header '['", "GET /health HTTP/1.1\r\nHost: [\r\n"],
+      ["Host header with a space", "GET /health HTTP/1.1\r\nHost: a b\r\n"],
+      [
+        "Host header with an out-of-range port",
+        "GET /health HTTP/1.1\r\nHost: localhost:99999\r\n",
+      ],
+      ["empty Host header", "GET /health HTTP/1.1\r\nHost: \r\n"],
+      ["malformed absolute-form target", "GET http://[/health HTTP/1.1\r\nHost: localhost\r\n"],
+      ["malformed Host on /mcp", "POST /mcp HTTP/1.1\r\nHost: [\r\nContent-Length: 0\r\n"],
+    ])("returns 400 for %s and keeps serving", async (_name, head) => {
+      const statusLine = await rawRequest(server, `${head}Connection: close\r\n\r\n`);
+      expect(statusLine).toBe("HTTP/1.1 400 Bad Request");
+
+      const res = await request(server, "/health");
+      expect(res.status).toBe(200);
+      expect(JSON.parse(res.body)).toEqual({ status: "ok" });
     });
   });
 
