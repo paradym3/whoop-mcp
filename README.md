@@ -105,6 +105,19 @@ See [data handling](references/privacy.md) and [telemetry controls](references/t
 	</a>
 </p>
 
+## npm Download History
+
+<p align="center">
+	<a href="https://npm-history.pages.dev/?package=whoop-ai-mcp&amp;start=2026-04-11&amp;mode=cumulative">
+		<picture>
+			<source media="(prefers-color-scheme: dark)" srcset="https://npm-history.pages.dev/svg?package=whoop-ai-mcp&amp;start=2026-04-11&amp;mode=cumulative&amp;theme=dark">
+			<source media="(prefers-color-scheme: light)" srcset="https://npm-history.pages.dev/svg?package=whoop-ai-mcp&amp;start=2026-04-11&amp;mode=cumulative&amp;theme=light">
+			<img src="https://npm-history.pages.dev/svg?package=whoop-ai-mcp&amp;start=2026-04-11&amp;mode=cumulative&amp;theme=light" width="880" alt="WHOOP MCP cumulative npm downloads since April 11, 2026">
+		</picture>
+	</a>
+	<br><sub>Downloads include automated installs and may not represent unique users.</sub>
+</p>
+
 ## Build With Us
 
 Found a useful question, a missing workflow or an integration worth sharing?
