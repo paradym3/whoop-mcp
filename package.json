@@ -2,7 +2,7 @@
   "name": "whoop-ai-mcp",
   "version": "0.8.4",
   "mcpName": "io.github.shashankswe2020-ux/whoop",
-  "description": "MCP server wrapping the WHOOP REST API for AI assistant access to health and fitness data",
+  "description": "Read-only WHOOP MCP server for recovery, sleep, HRV, strain, workouts, and personal health analytics in AI assistants",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,14 +26,23 @@
   },
   "keywords": [
     "whoop",
+    "whoop-api",
     "mcp",
+    "mcp-server",
     "model-context-protocol",
     "health",
     "fitness",
     "recovery",
     "sleep",
+    "hrv",
+    "workout",
+    "wearable",
+    "health-analytics",
     "ai",
-    "claude"
+    "claude",
+    "claude-desktop",
+    "codex",
+    "github-copilot"
   ],
   "author": "Shashank Mishra",
   "license": "MIT",
@@ -41,7 +50,7 @@
     "type": "git",
     "url": "git+https://github.com/shashankswe2020-ux/whoop-mcp.git"
   },
-  "homepage": "https://github.com/shashankswe2020-ux/whoop-mcp#readme",
+  "homepage": "https://shashankswe2020-ux.github.io/whoop-mcp/",
   "bugs": {
     "url": "https://github.com/shashankswe2020-ux/whoop-mcp/issues"
   },
