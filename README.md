@@ -10,6 +10,7 @@
 	<a href="https://www.npmjs.com/package/whoop-ai-mcp"><img src="https://img.shields.io/npm/dm/whoop-ai-mcp?color=087e8b" alt="Monthly npm downloads"></a>
 	<a href="https://github.com/shashankswe2020-ux/whoop-mcp/stargazers"><img src="https://img.shields.io/github/stars/shashankswe2020-ux/whoop-mcp?style=flat&color=d49b16" alt="GitHub stars"></a>
 	<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-555" alt="MIT license"></a>
+	<a href="https://buymeachai.ezee.li/shashankswe2020"><img src="https://img.shields.io/badge/Sponsor-Buy%20me%20a%20chai-d49b16" alt="Sponsor WHOOP MCP development"></a>
 </p>
 
 <p align="center">

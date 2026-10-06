@@ -7,9 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-06
+
+### Added
+- Successful setup responses now end with an optional sponsor link for every
+  supported client.
+- Added sponsor links to the README, project website, and GitHub funding
+  metadata.
+
 ### Fixed
 - The HTTP transport returns 400 Bad Request for a malformed `Host` header or
   request URL instead of crashing the server process.
+
+### Verification
+- 936 tests across 51 files pass.
+- Lint, formatting, typecheck, and build checks pass.
+- The installed `whoop-ai-mcp@0.9.0` tarball ends setup output with the sponsor
+  link and contains 191 expected files; `npm audit` reports zero vulnerabilities.
 
 ## [0.8.4] - 2026-09-23
 

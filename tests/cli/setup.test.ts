@@ -18,6 +18,13 @@ import {
 } from "../../src/cli/config-generators.js";
 import { parseSetupArgs, runSetup } from "../../src/cli/setup.js";
 
+const SPONSOR_REQUEST =
+  "If WHOOP MCP helps you, please consider sponsoring the project:\nhttps://buymeachai.ezee.li/shashankswe2020";
+
+function expectSponsorRequestLast(output: string): void {
+  expect(output.trimEnd().endsWith(SPONSOR_REQUEST)).toBe(true);
+}
+
 // ---------------------------------------------------------------------------
 // config-generators
 // ---------------------------------------------------------------------------
@@ -311,6 +318,7 @@ describe("runSetup — non-interactive", () => {
     expect(parsed.mcpServers.whoop.env.WHOOP_CLIENT_ID).toBe("id-1");
     expect(fake.files.has("/fake/config.json.bak")).toBe(false);
     expect(output()).toContain("Claude Desktop config written");
+    expectSponsorRequestLast(output());
   });
 
   it("backs up an existing config before overwriting", async () => {
@@ -401,6 +409,7 @@ describe("runSetup — non-interactive", () => {
 
     expect(output()).toContain("claude mcp add whoop");
     expect(output()).toContain("WHOOP_CLIENT_ID='id'");
+    expectSponsorRequestLast(output());
     // No file should have been written for the claude-code path
     expect(fake.files.size).toBe(0);
   });
@@ -420,6 +429,7 @@ describe("runSetup — non-interactive", () => {
 
     expect(output()).toContain("codex mcp add whoop");
     expect(output()).toContain("WHOOP_CLIENT_ID='id'");
+    expectSponsorRequestLast(output());
     expect(fake.files.size).toBe(0);
   });
 
@@ -438,6 +448,7 @@ describe("runSetup — non-interactive", () => {
 
     expect(output()).toContain("code --add-mcp");
     expect(output()).toContain('"WHOOP_CLIENT_ID":"id"');
+    expectSponsorRequestLast(output());
     expect(fake.files.size).toBe(0);
   });
 
@@ -521,6 +532,7 @@ describe("runSetup — non-interactive", () => {
     expect(output()).toContain("Profile OK");
     expect(output()).toContain("Existing config verified");
     expect(output()).not.toContain("Claude Desktop config written");
+    expectSponsorRequestLast(output());
   });
 
   it("reuses existing Claude Desktop whoop config without verification (no --verify)", async () => {

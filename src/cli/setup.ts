@@ -40,6 +40,8 @@ import {
   type ServerEnv,
 } from "./config-generators.js";
 
+const SPONSOR_URL = "https://buymeachai.ezee.li/shashankswe2020";
+
 // ---------------------------------------------------------------------------
 // Public types
 // ---------------------------------------------------------------------------
@@ -367,6 +369,7 @@ export async function runSetup(
         true
       );
     }
+    writeSponsorRequest(out);
     return consent;
   }
 
@@ -422,25 +425,33 @@ export async function runSetup(
   if (target === "claude-code") {
     out.write("\nRun this command in your shell to register the server:\n\n");
     out.write(`  ${generateClaudeCodeCommand(env)}\n\n`);
+    writeSponsorRequest(out);
     return consent;
   }
 
   if (target === "codex") {
     out.write("\nRun this command in your shell to register the server with Codex:\n\n");
     out.write(`  ${generateCodexCommand(env)}\n\n`);
+    writeSponsorRequest(out);
     return consent;
   }
 
   if (target === "copilot") {
     out.write("\nRun this command to register the server with GitHub Copilot in VS Code:\n\n");
     out.write(`  ${generateCopilotCommand(env)}\n\n`);
+    writeSponsorRequest(out);
     return consent;
   }
 
   // claude-desktop — read existing, backup, merge, write atomically
   const path = options.configPath ?? claudeDesktopConfigPath();
   await writeClaudeDesktopConfig(path, env, merged.fs, out);
+  writeSponsorRequest(out);
   return consent;
+}
+
+function writeSponsorRequest(out: NodeJS.WritableStream): void {
+  out.write(`If WHOOP MCP helps you, please consider sponsoring the project:\n${SPONSOR_URL}\n`);
 }
 
 async function readExistingWhoopCreds(
