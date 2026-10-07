@@ -71,6 +71,22 @@ Home and End. Confirm copy success/failure announcements and test with reduced
 motion, JavaScript disabled and the 3D CDN blocked. `npm test --
 tests/public-metadata.test.ts` checks metadata and the static page contract.
 
+The project-activity strip contains total npm downloads since the package's first
+publication on April 11, 2026, and the repository's current GitHub star count.
+The Pages workflow refreshes this HTML on deployment and daily at 06:17 UTC
+(scheduled runs may be delayed by GitHub). Visitors make no statistics API
+requests; the dated counts also work without JavaScript.
+
+Run `npm run site:stats` to refresh the local snapshot and `npm run site:check`
+to type-check its generator. The generator requests explicit dates through the
+previous UTC day, avoiding stale cached rolling-period responses, and sums
+non-overlapping one-year windows to stay within npm's 18-month API limit.
+Upstream npm totals can lag or be revised. All responses are validated.
+The optional `GITHUB_TOKEN` is sent only to
+GitHub. Failed requests or incomplete ranges stop the deployment, leaving the
+previous site and its explicitly dated counts intact rather than publishing zero
+or partial totals. The daily job changes only the deployment artifact, not git.
+
 ### Project Structure
 
 ```

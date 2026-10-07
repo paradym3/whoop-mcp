@@ -5,7 +5,13 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "scripts/update-site-stats.ts"
+      - "tests/site-stats.test.ts"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/pages.yml"
+  schedule:
+    - cron: "17 6 * * *"
   workflow_dispatch:
 
 # Allow GITHUB_TOKEN to deploy to GitHub Pages.
@@ -30,6 +36,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify statistics generator
+        run: |
+          npm run site:check
+          npx eslint scripts/update-site-stats.ts tests/site-stats.test.ts
+          npm test -- tests/site-stats.test.ts tests/public-metadata.test.ts
+
+      - name: Refresh public project statistics
+        run: npm run site:stats
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v6
