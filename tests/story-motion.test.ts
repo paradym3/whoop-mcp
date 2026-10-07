@@ -1,8 +1,24 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { captionOpacity } from "../site/story-motion.js";
+import { captionOpacity, fitBandAboveCaption } from "../site/story-motion.js";
 
 describe("scroll-story caption transitions", () => {
+  it.each([
+    { height: 568, captionTop: 150, worldHeight: 5.3 },
+    { height: 800, captionTop: 300, worldHeight: 6.6 },
+    { height: 1000, captionTop: 600, worldHeight: 3.5 },
+  ])(
+    "fits the band above the expanded command panel at $height pixels",
+    ({ height, captionTop, worldHeight }) => {
+      const fit = fitBandAboveCaption(height, captionTop, worldHeight);
+      const center = height / 2 - (fit.y * height) / worldHeight;
+      const halfHeight = (fit.scale * 1.6 * height) / worldHeight;
+      expect(center - halfHeight).toBeGreaterThanOrEqual(44 - 0.001);
+      expect(center + halfHeight).toBeLessThanOrEqual(captionTop - 24 + 0.001);
+      expect(fit.scale).toBeGreaterThan(0);
+      expect(fit.scale).toBeLessThanOrEqual(0.66);
+    }
+  );
   it.each([0.245, 0.32, 0.395])(
     "never displays adjacent captions together at the %s handoff, in either direction",
     (boundary) => {

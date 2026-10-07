@@ -66,6 +66,26 @@ JavaScript and unavailable WebGL use a static overview instead.
 Story captions fade entirely within their own scroll intervals: the outgoing
 caption is hidden before the next one appears, including when scrolling backward.
 `tests/story-motion.test.ts` guards the Recovery/Sleep/Strain handoffs.
+The command and setup sections have synchronized Node.js/Rust switches.
+Switching implementations preserves the selected client and updates the command,
+copy action and runtime requirements. Rust installation stays in the main command
+section; Client setup shows only the command for the installed binary:
+`cargo install whoop-mcp` (Rust 1.88+ and Cargo), then
+`whoop-mcp setup --client=<client>`. Commands follow the
+[Rust project's setup guide](https://github.com/shashankswe2020-ux/whoop-mcp-rs#quickstart).
+Both guides and a Rust fallback remain available without JavaScript.
+
+Client icons are served locally from `site/icons/`, with visible client names and
+decorative empty alt text. Claude's mark comes from the [official Claude site](https://claude.com/);
+Claude Code and Codex use their publishers' icons from the
+[Anthropic](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
+and [OpenAI](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
+Marketplace listings. The Copilot mark comes from
+[GitHub Octicons](https://github.com/primer/octicons/blob/main/icons/copilot-24.svg);
+its MIT license is retained in `site/icons/octicons-LICENSE.txt`.
+These marks identify compatible clients and do not imply endorsement.
+Project download/star counts continue to describe the Node.js repository and npm
+package, not combined totals across implementations.
 
 Preview `site/` with a local static HTTP server (no frontend build is required).
 Check the layout at 320, 768, 1024 and 1440 pixels, scroll through the story,
@@ -78,7 +98,9 @@ The project-activity strip contains total npm downloads since the package's firs
 publication on April 11, 2026, and the repository's current GitHub star count.
 The Pages workflow refreshes this HTML on deployment and daily at 06:17 UTC
 (scheduled runs may be delayed by GitHub). Visitors make no statistics API
-requests; the dated counts also work without JavaScript.
+requests; the dated counts also work without JavaScript. Dates, refresh cadence
+and the automated-install caveat appear inside a collapsed `* Disclaimer`
+disclosure, which supports keyboard interaction without JavaScript.
 
 Run `npm run site:stats` to refresh the local snapshot and `npm run site:check`
 to type-check its generator. The generator requests explicit dates through the

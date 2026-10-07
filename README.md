@@ -65,6 +65,10 @@ For Claude Code, Codex or Copilot, use `--client=claude-code`, `--client=codex` 
 `--client=copilot`, then run the registration command setup prints.
 [Full setup and configuration](references/installation.md).
 
+Prefer a native binary? The [Rust implementation](https://github.com/shashankswe2020-ux/whoop-mcp-rs)
+supports the same four clients: install with `cargo install whoop-mcp` (Rust 1.88+),
+then run `whoop-mcp setup --client=claude-desktop`. No Node.js runtime is needed.
+
 ## Your Data, Your Choice
 
 **Read-only WHOOP access. Local by default. No hosted relay required.**

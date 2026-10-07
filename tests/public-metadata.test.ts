@@ -117,7 +117,7 @@ describe("public metadata", () => {
       'id="setup-cmd">npx -y whoop-ai-mcp@latest setup --client=claude-desktop</code>'
     );
     for (const client of ["claude-desktop", "claude-code", "codex", "copilot"]) {
-      expect(html).toContain(`npx -y whoop-ai-mcp@latest setup --client=${client}`);
+      expect(html).toContain(`--client=${client}`);
     }
     expect(html).toContain("<noscript>");
     expect(html).toContain("prefers-reduced-motion: reduce");

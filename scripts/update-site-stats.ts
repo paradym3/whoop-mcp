@@ -99,9 +99,12 @@ export function renderProjectStats(input: ProjectStats): string {
     <div><dt><a href="https://www.npmjs.com/package/${PACKAGE}">Total npm downloads</a></dt><dd>${number.format(stats.downloads)}</dd></div>
     <div><dt><a href="https://github.com/${REPOSITORY}/stargazers">GitHub stars</a></dt><dd>${number.format(stats.stars)}</dd></div>
   </dl>
+  <details class="stats-disclaimer">
+  <summary>* Disclaimer</summary>
   <p>Downloads since first publication, through <time datetime="${stats.downloadsThrough}">${date.format(new Date(stats.downloadsThrough))}</time>.
   Stars checked <time datetime="${stats.checkedOn}">${date.format(new Date(stats.checkedOn))}</time>. Refreshed daily.</p>
   <p>Downloads may include automated installs.</p>
+  </details>
 </section>`;
 }
 

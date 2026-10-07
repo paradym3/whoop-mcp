@@ -95,6 +95,11 @@ describe("public project statistics", () => {
     expect(markup).toContain("GitHub stars");
     expect(markup).toContain('datetime="2026-10-06"');
     expect(markup).toContain("Downloads may include automated installs.");
+    const disclaimer = markup.match(/<details class="stats-disclaimer">([\s\S]*?)<\/details>/)?.[1];
+    expect(disclaimer).toContain("<summary>* Disclaimer</summary>");
+    expect(disclaimer).toContain("Downloads since first publication");
+    expect(disclaimer).toContain("Refreshed daily.");
+    expect(disclaimer).toContain("Downloads may include automated installs.");
     expect(markup).toContain("https://www.npmjs.com/package/whoop-ai-mcp");
     expect(markup).toContain("https://github.com/shashankswe2020-ux/whoop-mcp/stargazers");
     const html = "<main><!-- project-stats:start -->old<!-- project-stats:end --></main>";
@@ -112,6 +117,8 @@ describe("public project statistics", () => {
     ]);
     expect(html.match(/<!-- project-stats:start -->/g)).toHaveLength(1);
     expect(html).toContain("Total npm downloads");
+    expect(html).toContain('<details class="stats-disclaimer">');
+    expect(html).toContain("<summary>* Disclaimer</summary>");
     expect(workflow).toContain('cron: "17 6 * * *"');
     expect(workflow.indexOf("npm run site:stats")).toBeLessThan(
       workflow.indexOf("actions/upload-pages-artifact")

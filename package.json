@@ -23,7 +23,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "typecheck": "tsc --noEmit",
-    "site:check": "tsc --noEmit --target ES2022 --module NodeNext --strict --skipLibCheck --allowJs --checkJs scripts/update-site-stats.ts site/story-motion.js",
+    "site:check": "tsc --noEmit --target ES2022 --module NodeNext --strict --skipLibCheck --allowJs --checkJs scripts/update-site-stats.ts site/story-motion.js site/setup-options.js",
     "site:stats": "tsx scripts/update-site-stats.ts"
   },
   "keywords": [
