@@ -101,7 +101,7 @@ export function renderProjectStats(input: ProjectStats): string {
   </dl>
   <p>Downloads since first publication, through <time datetime="${stats.downloadsThrough}">${date.format(new Date(stats.downloadsThrough))}</time>.
   Stars checked <time datetime="${stats.checkedOn}">${date.format(new Date(stats.checkedOn))}</time>. Refreshed daily.</p>
-  <p>Downloads include automated installs, not unique users. npm reporting may lag.</p>
+  <p>Downloads may include automated installs.</p>
 </section>`;
 }
 

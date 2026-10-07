@@ -94,7 +94,7 @@ describe("public project statistics", () => {
     expect(markup).toContain("Total npm downloads");
     expect(markup).toContain("GitHub stars");
     expect(markup).toContain('datetime="2026-10-06"');
-    expect(markup).toContain("not unique users");
+    expect(markup).toContain("Downloads may include automated installs.");
     expect(markup).toContain("https://www.npmjs.com/package/whoop-ai-mcp");
     expect(markup).toContain("https://github.com/shashankswe2020-ux/whoop-mcp/stargazers");
     const html = "<main><!-- project-stats:start -->old<!-- project-stats:end --></main>";
