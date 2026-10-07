@@ -47,90 +47,10 @@ npm --prefix collector audit
 
 Both collector builds are local dry runs; deployment requires separately configured
 Cloudflare infrastructure. See [operator documentation](../collector/README.md).
-The [public site](../site/index.html) is standalone HTML, deployed from `site/` by
-the [Pages workflow](../.github/workflows/pages.yml).
-The production domain is [whoopconnector.com](https://whoopconnector.com/),
-configured in the repository's Pages settings. Because publishing uses GitHub
-Actions, a `CNAME` file is not used. At Hostinger, the apex (`@`) A records point
-to `185.199.108.153`, `185.199.109.153`, `185.199.110.153` and `185.199.111.153`;
-`www` is a CNAME to `shashankswe2020-ux.github.io`. Preserve unrelated mail and
-verification records when changing DNS. Keep HTTPS enforcement enabled once
-GitHub has provisioned the domain certificate.
-
-Its light product-story layout includes a scroll-driven illustrative band,
-example analytics, a privacy-mode preview and keyboard-accessible client setup
-tabs. The page loads pinned Three.js 0.160.0 modules from jsDelivr for the band
-and fonts from Google Fonts; these are browser-only and do not change the MCP
-package dependencies. No telemetry client is loaded. Reduced-motion, disabled
-JavaScript and unavailable WebGL use a static overview instead.
-Story captions fade entirely within their own scroll intervals: the outgoing
-caption is hidden before the next one appears, including when scrolling backward.
-`tests/story-motion.test.ts` guards the Recovery/Sleep/Strain handoffs.
-The command and setup sections have synchronized Node.js/Rust switches.
-Switching implementations preserves the selected client and updates the command,
-copy action and runtime requirements. Rust installation stays in the main command
-section; Client setup shows only the command for the installed binary:
-`cargo install whoop-mcp` (Rust 1.88+ and Cargo), then
-`whoop-mcp setup --client=<client>`. Commands follow the
-[Rust project's setup guide](https://github.com/shashankswe2020-ux/whoop-mcp-rs#quickstart).
-Both guides and a Rust fallback remain available without JavaScript.
-
-Client icons are served locally from `site/icons/`, with visible client names and
-decorative empty alt text. Claude's mark comes from the [official Claude site](https://claude.com/);
-Claude Code and Codex use their publishers' icons from the
-[Anthropic](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code)
-and [OpenAI](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
-Marketplace listings. The Copilot mark comes from
-[GitHub Octicons](https://github.com/primer/octicons/blob/main/icons/copilot-24.svg);
-its MIT license is retained in `site/icons/octicons-LICENSE.txt`.
-These marks identify compatible clients and do not imply endorsement.
-Project download/star counts continue to describe the Node.js repository and npm
-package, not combined totals across implementations.
-
-Preview `site/` with a local static HTTP server (no frontend build is required).
-Check the layout at 320, 768, 1024 and 1440 pixels, scroll through the story,
-try band colors and privacy modes, and verify setup tabs with arrow keys,
-Home and End. Confirm copy success/failure announcements and test with reduced
-motion, JavaScript disabled and the 3D CDN blocked. `npm test --
-tests/public-metadata.test.ts` checks metadata and the static page contract.
-
-The project-activity strip contains total npm downloads since the package's first
-publication on April 11, 2026, and the repository's current GitHub star count.
-The Pages workflow refreshes this HTML on deployment and daily at 06:17 UTC
-(scheduled runs may be delayed by GitHub). Visitors make no statistics API
-requests; the dated counts also work without JavaScript. Dates, refresh cadence
-and the automated-install caveat appear inside a collapsed `* Disclaimer`
-disclosure, which supports keyboard interaction without JavaScript.
-
-Run `npm run site:stats` to refresh the local snapshot and `npm run site:check`
-to type-check its generator. The generator requests explicit dates through the
-previous UTC day, avoiding stale cached rolling-period responses, and sums
-non-overlapping one-year windows to stay within npm's 18-month API limit.
-Upstream npm totals can lag or be revised. All responses are validated.
-The optional `GITHUB_TOKEN` is sent only to
-GitHub. Failed requests or incomplete ranges stop the deployment, leaving the
-previous site and its explicitly dated counts intact rather than publishing zero
-or partial totals. The daily job changes only the deployment artifact, not git.
-
-### Website Search Metadata
-
-The website uses one HTTPS canonical URL, a crawlable
-[`robots.txt`](../site/robots.txt) pointing to the [sitemap](../site/sitemap.xml),
-descriptive search/social metadata and JSON-LD for the software and website.
-Core content and project statistics are in the HTML, not dependent on a
-browser-side API request. Repository stars are not represented as product
-ratings or reviews. Keep the JSON-LD software version aligned with releases and
-update sitemap `lastmod` for substantive page changes, not simply each build.
-These contracts are covered by `tests/public-metadata.test.ts`.
-
-After deployment, verify HTTPS and `www` redirects, HTTP 200 responses for the
-canonical page, sitemap and social image, and HTTP 404 for missing pages.
-In Google Search Console, verify the domain, submit
-`https://whoopconnector.com/sitemap.xml`, and inspect the home URL to request
-indexing. Search Console verification requires the site owner's Google account;
-neither a sitemap nor structured data guarantees indexing, rich results or
-ranking. Use Search Console's field data to monitor Core Web Vitals; local
-browser measurements are lab checks, not real-user performance evidence.
+The [public website](https://whoopconnector.com/) is maintained independently in
+the private [whoop-mcp-site repository](https://github.com/shashankswe2020-ux/whoop-mcp-site).
+Its source, tests, statistics generator, deployment and operating documentation
+are not part of either server checkout.
 
 ### Project Structure
 
@@ -180,7 +100,6 @@ src/
 
 tests/                         # Mirrors client source; mocked WHOOP data
 collector/                     # Separate Workers/D1 collector and private dashboard
-site/                          # Static public website
 docs/                          # Specifications, plans and verification records
 ```
 
@@ -218,7 +137,8 @@ launch; inspect the actual launched version when diagnosing issues.
   release workflows; use its manual dispatch on the approved tag when necessary.
 6. Confirm the npm version/dist-tag and smoke-test the published artifact.
   Registry propagation can lag a successful upload; do not blindly republish.
-  Verify MCP Registry metadata and Pages deployment separately.
+  Verify MCP Registry metadata separately. Coordinate website release metadata
+  updates with the independent site repository.
 
 ### Changelog
 
