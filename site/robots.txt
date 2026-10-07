@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://whoopconnector.com/sitemap.xml

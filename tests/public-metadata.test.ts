@@ -58,7 +58,14 @@ describe("public metadata", () => {
       url: SITE_URL,
       applicationCategory: "HealthApplication",
       softwareVersion: packageMetadata.version,
+      "@id": `${SITE_URL}#software`,
+      image: `${SITE_URL}social-preview.png`,
     });
+    expect(structuredData).not.toHaveProperty("aggregateRating");
+    expect(html).toContain('<meta property="og:site_name" content="WHOOP MCP" />');
+    expect(html).toContain('<meta property="og:image:width" content="1200" />');
+    expect(html).toContain('<meta property="og:image:height" content="630" />');
+    expect(html).toContain('<meta name="twitter:image:alt"');
     expect(socialPreview.subarray(1, 4).toString()).toBe("PNG");
     expect(socialPreview.readUInt32BE(16)).toBe(1200);
     expect(socialPreview.readUInt32BE(20)).toBe(630);
@@ -68,6 +75,32 @@ describe("public metadata", () => {
     const sitemap = await readFile(new URL("../site/sitemap.xml", import.meta.url), "utf8");
 
     expect(sitemap).toContain(`<loc>${SITE_URL}</loc>`);
+  });
+
+  it("allows crawlers and advertises the HTTPS sitemap", async () => {
+    const robots = await readFile(new URL("../site/robots.txt", import.meta.url), "utf8");
+    expect(robots).toContain("User-agent: *");
+    expect(robots).toContain("Allow: /");
+    expect(robots).toContain(`Sitemap: ${SITE_URL}sitemap.xml`);
+    expect(robots).not.toMatch(/^Disallow:\s*\/\s*$/m);
+  });
+
+  it("uses a descriptive search title and consistent website identity", async () => {
+    const html = await readFile(new URL("../site/index.html", import.meta.url), "utf8");
+    const titles = [...html.matchAll(/<title>(.*?)<\/title>/g)];
+    expect(titles).toHaveLength(1);
+    expect(titles[0]?.[1]).toBe("WHOOP MCP Server for Claude, Codex &amp; GitHub Copilot");
+    expect(html).toContain('content="index, follow, max-image-preview:large"');
+    const entities = [
+      ...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g),
+    ].map((match) => JSON.parse(match[1]!) as Record<string, unknown>);
+    expect(entities.find((entity) => entity["@type"] === "WebSite")).toMatchObject({
+      "@id": `${SITE_URL}#website`,
+      name: "WHOOP MCP",
+      alternateName: "whoop-mcp",
+      url: SITE_URL,
+      inLanguage: "en",
+    });
   });
 
   it("provides the product story with accessible static and setup fallbacks", async () => {

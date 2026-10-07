@@ -87,6 +87,26 @@ GitHub. Failed requests or incomplete ranges stop the deployment, leaving the
 previous site and its explicitly dated counts intact rather than publishing zero
 or partial totals. The daily job changes only the deployment artifact, not git.
 
+### Website Search Metadata
+
+The website uses one HTTPS canonical URL, a crawlable
+[`robots.txt`](../site/robots.txt) pointing to the [sitemap](../site/sitemap.xml),
+descriptive search/social metadata and JSON-LD for the software and website.
+Core content and project statistics are in the HTML, not dependent on a
+browser-side API request. Repository stars are not represented as product
+ratings or reviews. Keep the JSON-LD software version aligned with releases and
+update sitemap `lastmod` for substantive page changes, not simply each build.
+These contracts are covered by `tests/public-metadata.test.ts`.
+
+After deployment, verify HTTPS and `www` redirects, HTTP 200 responses for the
+canonical page, sitemap and social image, and HTTP 404 for missing pages.
+In Google Search Console, verify the domain, submit
+`https://whoopconnector.com/sitemap.xml`, and inspect the home URL to request
+indexing. Search Console verification requires the site owner's Google account;
+neither a sitemap nor structured data guarantees indexing, rich results or
+ranking. Use Search Console's field data to monitor Core Web Vitals; local
+browser measurements are lab checks, not real-user performance evidence.
+
 ### Project Structure
 
 ```

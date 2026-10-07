@@ -14,6 +14,7 @@
 </p>
 
 <p align="center">
+	<a href="https://whoopconnector.com/">Website</a> ·
 	<a href="#quickstart"><strong>Try it now</strong></a> ·
 	<a href="https://youtu.be/2vwxEjctcWs">Watch the walkthrough</a> ·
 	<a href="#documentation">Explore the docs</a> ·
