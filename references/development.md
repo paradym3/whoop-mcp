@@ -49,6 +49,27 @@ Both collector builds are local dry runs; deployment requires separately configu
 Cloudflare infrastructure. See [operator documentation](../collector/README.md).
 The [public site](../site/index.html) is standalone HTML, deployed from `site/` by
 the [Pages workflow](../.github/workflows/pages.yml).
+The production domain is [whoopconnector.com](https://whoopconnector.com/),
+configured in the repository's Pages settings. Because publishing uses GitHub
+Actions, a `CNAME` file is not used. At Hostinger, the apex (`@`) A records point
+to `185.199.108.153`, `185.199.109.153`, `185.199.110.153` and `185.199.111.153`;
+`www` is a CNAME to `shashankswe2020-ux.github.io`. Preserve unrelated mail and
+verification records when changing DNS. Keep HTTPS enforcement enabled once
+GitHub has provisioned the domain certificate.
+
+Its light product-story layout includes a scroll-driven illustrative band,
+example analytics, a privacy-mode preview and keyboard-accessible client setup
+tabs. The page loads pinned Three.js 0.160.0 modules from jsDelivr for the band
+and fonts from Google Fonts; these are browser-only and do not change the MCP
+package dependencies. No telemetry client is loaded. Reduced-motion, disabled
+JavaScript and unavailable WebGL use a static overview instead.
+
+Preview `site/` with a local static HTTP server (no frontend build is required).
+Check the layout at 320, 768, 1024 and 1440 pixels, scroll through the story,
+try band colors and privacy modes, and verify setup tabs with arrow keys,
+Home and End. Confirm copy success/failure announcements and test with reduced
+motion, JavaScript disabled and the 3D CDN blocked. `npm test --
+tests/public-metadata.test.ts` checks metadata and the static page contract.
 
 ### Project Structure
 

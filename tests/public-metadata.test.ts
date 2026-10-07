@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
-const SITE_URL = "https://shashankswe2020-ux.github.io/whoop-mcp/";
+const SITE_URL = "https://whoopconnector.com/";
 
 async function readJson(path: string): Promise<Record<string, unknown>> {
   return JSON.parse(await readFile(new URL(path, import.meta.url), "utf8")) as Record<
@@ -68,5 +68,26 @@ describe("public metadata", () => {
     const sitemap = await readFile(new URL("../site/sitemap.xml", import.meta.url), "utf8");
 
     expect(sitemap).toContain(`<loc>${SITE_URL}</loc>`);
+  });
+
+  it("provides the product story with accessible static and setup fallbacks", async () => {
+    const html = await readFile(new URL("../site/index.html", import.meta.url), "utf8");
+
+    expect(html).toContain('id="band-canvas" aria-hidden="true"');
+    expect(html).toContain('id="band-fallback"');
+    expect(html).toContain('href="#main"');
+    expect(html).toContain('<div id="top"></div>');
+    expect(html).not.toContain('class="stage" id="top"');
+    expect(html).toContain('role="tablist" aria-label="Client"');
+    expect(html).toContain('id="copy-status" role="status"');
+    expect(html).toContain(
+      'id="setup-cmd">npx -y whoop-ai-mcp@latest setup --client=claude-desktop</code>'
+    );
+    for (const client of ["claude-desktop", "claude-code", "codex", "copilot"]) {
+      expect(html).toContain(`npx -y whoop-ai-mcp@latest setup --client=${client}`);
+    }
+    expect(html).toContain("<noscript>");
+    expect(html).toContain("prefers-reduced-motion: reduce");
+    expect(html).toContain('id="release"');
   });
 });
