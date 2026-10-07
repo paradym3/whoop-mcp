@@ -63,6 +63,9 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -548,13 +551,13 @@ html:not(.animated-story) .swatches{display:none}
   </div>
 </footer>
 
-<script>
+<script type="module">
+import { captionOpacity } from "./story-motion.js";
 (function(){
   var story=document.getElementById('story');
   var stage=story.querySelector('.stage');
   var caps=[].slice.call(stage.querySelectorAll('.cap'));
   var motion=matchMedia('(prefers-reduced-motion: reduce)');
-  function ss(a,b,x){var t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);}
   window.__story={p:0};
   function update(){
     if(!document.documentElement.classList.contains('animated-story')){
@@ -567,7 +570,7 @@ html:not(.animated-story) .swatches{display:none}
     window.__story.p=p;
     caps.forEach(function(c){
       var a=+c.dataset.in,b=+c.dataset.out;
-      var o=ss(a-0.03,a+0.005,p)*(1-ss(b-0.005,b+0.03,p));
+      var o=captionOpacity(a,b,p);
       c.style.opacity=o.toFixed(3);
       c.style.visibility=o<0.01?'hidden':'visible';
       c.inert=o<0.1;
@@ -645,16 +648,14 @@ html:not(.animated-story) .swatches{display:none}
   s+='<text class="lbl" x="'+L+'" y="'+(H-6)+'">30 nights ago</text><text class="lbl" x="'+(W-R)+'" y="'+(H-6)+'" text-anchor="end">Last night · '+last+' ms</text>';
   svg.innerHTML=s;
 })();
+dispatchEvent(new Event('storyready'));
 </script>
 
-<script type="importmap">
-{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
-</script>
 <script type="module">
 const motion=matchMedia('(prefers-reduced-motion: reduce)');
 let initialized=false;
 async function initializeBand(){
-if(motion.matches||initialized)return;
+if(!window.__story||motion.matches||initialized)return;
 initialized=true;
 try{
 const [THREE,{RoomEnvironment}]=await Promise.all([
@@ -897,6 +898,7 @@ document.querySelectorAll('[data-band]').forEach(b=>b.addEventListener('click',(
 }
 }
 motion.addEventListener('change',initializeBand);
+addEventListener('storyready',initializeBand);
 initializeBand();
 </script>
 </body>

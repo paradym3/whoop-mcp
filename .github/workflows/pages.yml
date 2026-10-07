@@ -7,6 +7,7 @@ on:
       - "site/**"
       - "scripts/update-site-stats.ts"
       - "tests/site-stats.test.ts"
+      - "tests/story-motion.test.ts"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/pages.yml"
@@ -50,7 +51,7 @@ jobs:
         run: |
           npm run site:check
           npx eslint scripts/update-site-stats.ts tests/site-stats.test.ts
-          npm test -- tests/site-stats.test.ts tests/public-metadata.test.ts
+          npm test -- tests/site-stats.test.ts tests/public-metadata.test.ts tests/story-motion.test.ts
 
       - name: Refresh public project statistics
         run: npm run site:stats

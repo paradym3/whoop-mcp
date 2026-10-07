@@ -63,6 +63,9 @@ tabs. The page loads pinned Three.js 0.160.0 modules from jsDelivr for the band
 and fonts from Google Fonts; these are browser-only and do not change the MCP
 package dependencies. No telemetry client is loaded. Reduced-motion, disabled
 JavaScript and unavailable WebGL use a static overview instead.
+Story captions fade entirely within their own scroll intervals: the outgoing
+caption is hidden before the next one appears, including when scrolling backward.
+`tests/story-motion.test.ts` guards the Recovery/Sleep/Strain handoffs.
 
 Preview `site/` with a local static HTTP server (no frontend build is required).
 Check the layout at 320, 768, 1024 and 1440 pixels, scroll through the story,
