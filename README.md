@@ -6,8 +6,10 @@
 <p align="center">
 	<a href="https://www.npmjs.com/package/whoop-ai-mcp"><img src="https://img.shields.io/npm/v/whoop-ai-mcp?color=16803c&label=npm" alt="Latest npm version"></a>
 	<a href="https://www.npmjs.com/package/whoop-ai-mcp"><img src="https://img.shields.io/npm/dm/whoop-ai-mcp?color=087e8b" alt="Monthly npm downloads"></a>
+	<a href="https://npm-history.pages.dev/?package=whoop-ai-mcp&amp;start=2026-04-11&amp;mode=cumulative"><img src="https://img.shields.io/npm/dt/whoop-ai-mcp?color=087e8b&label=total%20downloads" alt="Total npm downloads"></a>
 	<a href="https://github.com/shashankswe2020-ux/whoop-mcp/stargazers"><img src="https://img.shields.io/github/stars/shashankswe2020-ux/whoop-mcp?style=flat&color=d49b16" alt="GitHub stars"></a>
 	<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-555" alt="MIT license"></a>
+	<a href="https://buymeacoffee.com/shashanksw9"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-support-FFDD00?logo=buymeacoffee&logoColor=000000" alt="Buy me a coffee to support whoop-ai-mcp"></a>
 </p>
 
 **whoop-ai-mcp** is a read-only [WHOOP](https://www.whoop.com/) [MCP server](https://modelcontextprotocol.io/) for Claude Desktop, Claude Code, Codex and GitHub Copilot. Ask about your recovery, compare weeks of sleep, or check today against your own baseline, without exporting the data yourself.
@@ -121,9 +123,16 @@ Parameters, date expressions, resources and caching are in the [tool reference](
 
 What changed recently? See the [changelog](CHANGELOG.md) or the [latest release](https://github.com/shashankswe2020-ux/whoop-mcp/releases/latest).
 
-## Contributing
+## Feedback and contributing
 
-Found a useful question, a missing workflow or a bug? [Open an issue](https://github.com/shashankswe2020-ux/whoop-mcp/issues/new/choose) or read the [contributing guide](CONTRIBUTING.md). Please never include credentials or health records in a public report; security problems go through the [security policy](SECURITY.md). Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+<p align="center">
+	<a href="https://github.com/shashankswe2020-ux/whoop-mcp/issues/new?template=bug_report.yml"><picture><source media="(prefers-color-scheme: dark)" srcset="images/readme/btn-bug-dark.svg"><img src="images/readme/btn-bug-light.svg" height="44" alt="Report a bug"></picture></a>&nbsp;
+	<a href="https://github.com/shashankswe2020-ux/whoop-mcp/issues/new?template=feature_request.yml"><picture><source media="(prefers-color-scheme: dark)" srcset="images/readme/btn-feature-dark.svg"><img src="images/readme/btn-feature-light.svg" height="44" alt="Request a feature"></picture></a>
+</p>
+
+Something not working, or a question you wish you could ask? Use the buttons above. Each opens a short form that asks for the details needed to help. Issues are public, so never include credentials or health records; security problems go through the [security policy](SECURITY.md) instead.
+
+Want to contribute code? Read the [contributing guide](CONTRIBUTING.md). Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 If whoop-ai-mcp is useful to you, a GitHub star helps other people find it, and you can [buy me a coffee](https://buymeacoffee.com/shashanksw9) to support development.
 

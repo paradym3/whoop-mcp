@@ -101,3 +101,16 @@ for th, t in THEMES.items():
     p.append(T("Health results go to the assistant provider you use. Aggregate mode limits that to five summary tools.", "med", 17, W / 2, 322, t["ink2"], "middle")[0])
     svg("how-it-works", th, W, H, "".join(p))
 print("ok")
+
+# ---------- feedback buttons (44 px tall): Report a bug, Request a feature
+for th, t in THEMES.items():
+    for name, label, icon in [("btn-bug", "Report a bug", "bug"), ("btn-feature", "Request a feature", "idea")]:
+        _, w = text(label, "bold", 17)
+        W, H = int(w + 70), 44
+        ic = (f'<circle cx="24" cy="22" r="7" fill="none" stroke="{t["ink"]}" stroke-width="2"/><path d="M24 18v4.5M24 25.5v.5" stroke="{t["ink"]}" stroke-width="2" stroke-linecap="round"/>'
+              if icon == "bug" else
+              f'<path d="M24 14v16M16 22h16" stroke="{t["signal"]}" stroke-width="2.4" stroke-linecap="round"/>')
+        body = (f'<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="8" fill="{t["card"]}" stroke="{t["ink"]}"/>' + ic
+                + T(label, "bold", 17, 44, 28, t["ink"])[0])
+        svg(name, th, W, H, body)
+print("buttons ok")

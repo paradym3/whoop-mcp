@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Report a security problem
+    url: https://github.com/shashankswe2020-ux/whoop-mcp/blob/main/SECURITY.md
+    about: Please report vulnerabilities privately, not in a public issue.
+  - name: Setup and troubleshooting guide
+    url: https://github.com/shashankswe2020-ux/whoop-mcp/blob/main/references/troubleshooting.md
+    about: Common errors and the doctor command, which may fix your problem without an issue.
   - name: Project backlog board
     url: https://github.com/users/shashankswe2020-ux/projects
-    about: Track roadmap and backlog status in GitHub Projects.
+    about: See what's planned and in progress.
