@@ -49,8 +49,10 @@ Both collector builds are local dry runs; deployment requires separately configu
 Cloudflare infrastructure. See [operator documentation](../collector/README.md).
 The [public website](https://whoopconnector.com/) is maintained independently in
 the private [whoop-mcp-site repository](https://github.com/shashankswe2020-ux/whoop-mcp-site).
-Its source, tests, statistics generator, deployment and operating documentation
-are not part of either server checkout.
+Its source, tests, statistics generator and operating documentation are not part
+of either server checkout. Until the custom domain moves from GitHub Pages to
+Cloudflare Pages, the verified static output is mirrored in `site/` and deployed
+by `.github/workflows/pages.yml`.
 
 ### Project Structure
 
