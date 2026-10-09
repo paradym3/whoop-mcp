@@ -40,7 +40,7 @@ import {
   type ServerEnv,
 } from "./config-generators.js";
 
-const SPONSOR_URL = "https://buymeachai.ezee.li/shashankswe2020";
+const SPONSOR_URL = "https://buymeacoffee.com/shashanksw9";
 
 // ---------------------------------------------------------------------------
 // Public types

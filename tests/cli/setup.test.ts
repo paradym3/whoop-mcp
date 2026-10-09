@@ -19,7 +19,7 @@ import {
 import { parseSetupArgs, runSetup } from "../../src/cli/setup.js";
 
 const SPONSOR_REQUEST =
-  "If WHOOP MCP helps you, please consider sponsoring the project:\nhttps://buymeachai.ezee.li/shashankswe2020";
+  "If WHOOP MCP helps you, please consider sponsoring the project:\nhttps://buymeacoffee.com/shashanksw9";
 
 function expectSponsorRequestLast(output: string): void {
   expect(output.trimEnd().endsWith(SPONSOR_REQUEST)).toBe(true);
