@@ -1,0 +1,30 @@
+name: Thank contributors
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  thank:
+    if: >-
+      github.event.pull_request.user.type == 'User' &&
+      github.event.pull_request.user.login != github.repository_owner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Thank contributor
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const user = context.payload.pull_request.user.login;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `Thanks so much for opening this PR, @${user}! 🙌
+
+            whoop-mcp is a side project I maintain in my free time, and contributions like yours are what keep it improving. I'll review this as soon as I can. If you have any questions in the meantime, just drop them here.
+
+            If whoop-mcp has been useful to you or your team, you can support its development by [buying me a coffee ☕](https://buymeacoffee.com/shashanksw9). Totally optional — your contribution already means a lot!`
+            });

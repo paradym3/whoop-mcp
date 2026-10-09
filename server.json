@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.shashankswe2020-ux/whoop",
-  "description": "MCP server for WHOOP health data — recovery, sleep, workouts, cycles, and trends.",
+  "description": "Read-only WHOOP MCP server for recovery, sleep, HRV, strain, workouts, and personal health analytics.",
   "repository": {
     "url": "https://github.com/shashankswe2020-ux/whoop-mcp",
     "source": "github"
   },
-  "version": "0.7.0",
+  "version": "0.9.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "whoop-ai-mcp",
-      "version": "0.7.0",
+      "version": "0.9.1",
       "transport": {
         "type": "stdio"
       },

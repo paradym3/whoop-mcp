@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible bug to help us improve whoop-ai-mcp.
+description: Something in whoop-ai-mcp isn't working the way it should.
 title: "[Bug]: "
 labels:
   - bug
@@ -7,59 +7,95 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting this issue. Please include enough detail for us to reproduce it quickly.
+        Thanks for taking the time to report this.
+
+        > [!WARNING]
+        > This issue is public. **Don't paste your WHOOP client secret, tokens or health data.** Replace any real values with placeholders. To report a security problem privately, follow the [security policy](https://github.com/shashankswe2020-ux/whoop-mcp/blob/main/SECURITY.md) instead.
   - type: textarea
     id: summary
     attributes:
-      label: Summary
-      description: What happened?
-      placeholder: A clear and concise description of the bug.
+      label: What happened?
+      description: Include the question you asked or the command you ran, and any error message.
+      placeholder: 'I asked "How am I doing today?" and Claude Desktop showed "Network error: Unable to reach the WHOOP API".'
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
       label: Steps to reproduce
-      description: Tell us how to reproduce the issue.
       placeholder: |
-        1. Configure whoop-ai-mcp with ...
-        2. Run ...
-        3. Observe ...
+        1. Run `npx -y whoop-ai-mcp@latest setup --client=claude-desktop`
+        2. Restart Claude Desktop and ask ...
+        3. See ...
+    validations:
+      required: false
+  - type: dropdown
+    id: client
+    attributes:
+      label: Which assistant are you using?
+      options:
+        - Claude Desktop
+        - Claude Code
+        - Codex
+        - GitHub Copilot
+        - MCP Inspector
+        - Other
     validations:
       required: true
-  - type: textarea
-    id: expected
+  - type: dropdown
+    id: implementation
     attributes:
-      label: Expected behavior
-      placeholder: What did you expect to happen?
-    validations:
-      required: true
-  - type: textarea
-    id: actual
-    attributes:
-      label: Actual behavior
-      placeholder: What actually happened? Include error output if available.
+      label: Which version of the server?
+      options:
+        - npm package (whoop-ai-mcp)
+        - Rust binary (whoop-mcp)
+        - Self-hosted or remote deployment
     validations:
       required: true
   - type: input
     id: version
     attributes:
-      label: whoop-ai-mcp version
-      placeholder: "e.g. 0.2.1"
+      label: Package version
+      description: The version in your assistant's MCP config. If it says `@latest`, write "latest".
+      placeholder: "0.9.1 or latest"
     validations:
       required: true
-  - type: input
-    id: node-version
+  - type: dropdown
+    id: privacy-mode
     attributes:
-      label: Node.js version
-      placeholder: "e.g. 22.15.0"
+      label: Privacy mode
+      options:
+        - Standard (default)
+        - Aggregate
+        - Not sure
+    validations:
+      required: false
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system and Node.js version
+      placeholder: macOS 15, Node.js 22.15.0
     validations:
       required: true
   - type: textarea
-    id: environment
+    id: doctor
     attributes:
-      label: Environment details
-      description: OS, MCP client (Claude Desktop/Inspector), and any relevant setup notes.
-      placeholder: "macOS 15, Claude Desktop x.y.z, WHOOP redirect URI ..."
+      label: Diagnostics (optional)
+      description: |
+        Run `npx -y whoop-ai-mcp@latest doctor --json` and paste the output. It doesn't call WHOOP or read your tokens, but check it before posting and remove anything you'd rather keep private.
+      render: json
     validations:
-      required: true
+      required: false
+  - type: checkboxes
+    id: privacy-check
+    attributes:
+      label: Before you submit
+      options:
+        - label: I've removed credentials, tokens and personal health data from this report.
+          required: true

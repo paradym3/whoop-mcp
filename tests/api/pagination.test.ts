@@ -138,6 +138,34 @@ describe("fetchAllPages", () => {
     expect(getMock).toHaveBeenCalledTimes(2);
   });
 
+  it("returns truncated=false when maxRecords is hit exactly on the last real page (next_token: null)", async () => {
+    // WHOOP returns next_token as an explicit `null` (not omitted) when a
+    // page is the last one. If the record count happens to land exactly on
+    // maxRecords on that same page, there is genuinely no more data — this
+    // must not be reported as truncated.
+    const { client } = createMockClient([{ records: makeRecords(1, 10), next_token: null }]);
+
+    const result = await fetchAllPages<MockRecord>(client, "/v2/recovery", {
+      maxRecords: 10,
+      interPageDelayMs: 0,
+    });
+
+    expect(result.records).toHaveLength(10);
+    expect(result.truncated).toBe(false);
+  });
+
+  it("returns truncated=true when maxRecords is hit exactly but a real next_token remains", async () => {
+    const { client } = createMockClient([{ records: makeRecords(1, 10), next_token: "token_2" }]);
+
+    const result = await fetchAllPages<MockRecord>(client, "/v2/recovery", {
+      maxRecords: 10,
+      interPageDelayMs: 0,
+    });
+
+    expect(result.records).toHaveLength(10);
+    expect(result.truncated).toBe(true);
+  });
+
   it("stops fetching more pages once maxRecords reached from first page", async () => {
     const { client, getMock } = createMockClient([
       { records: makeRecords(1, 20), next_token: "token_2" },

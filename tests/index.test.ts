@@ -53,6 +53,16 @@ vi.mock("@modelcontextprotocol/sdk/server/stdio.js", () => ({
 
 const mockCreateHttpServer = vi.fn();
 const mockHttpClose = vi.fn(() => Promise.resolve());
+const mockRunSetup = vi.fn();
+const mockRunDoctor = vi.fn();
+
+vi.mock("../src/cli/setup.js", () => ({
+  parseSetupArgs: () => ({}),
+  runSetup: (...args: unknown[]) => mockRunSetup(...args),
+}));
+vi.mock("../src/cli/doctor.js", () => ({
+  runDoctor: (...args: unknown[]) => mockRunDoctor(...args),
+}));
 
 vi.mock("../src/transport/http.js", () => ({
   createHttpServer: (...args: unknown[]) => mockCreateHttpServer(...args),
@@ -82,7 +92,15 @@ function setupHappyPath(): void {
   const mockServer = { connect: mockConnect };
   mockCreateWhoopServer.mockReturnValue({ server: mockServer });
   mockConnect.mockResolvedValue(undefined);
-  MockStdioServerTransport.mockReturnValue(mockStdioTransportInstance);
+  MockStdioServerTransport.mockImplementation(function () {
+    return mockStdioTransportInstance;
+  });
+}
+
+function getDeferredClient(): { get: (path: string) => Promise<unknown> } {
+  return mockCreateWhoopServer.mock.calls[0][0] as {
+    get: (path: string) => Promise<unknown>;
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -110,12 +128,105 @@ describe("main() entry point", () => {
     delete process.env.MCP_ALLOWED_ORIGINS;
     delete process.env.LOG_FORMAT;
     delete process.env.WHOOP_MCP_PRIVACY_MODE;
+    delete process.env.WHOOP_MCP_TELEMETRY;
+    delete process.env.WHOOP_MCP_TELEMETRY_ENDPOINT;
+    delete process.env.DO_NOT_TRACK;
   });
 
   afterEach(() => {
     // Restore env
     process.env = { ...originalEnv };
     consoleErrorSpy.mockRestore();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  describe("CLI telemetry", () => {
+    function enableTelemetry(): ReturnType<typeof vi.fn> {
+      process.env.WHOOP_MCP_TELEMETRY = "1";
+      process.env.WHOOP_MCP_TELEMETRY_ENDPOINT = "https://collector.example/events";
+      const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+      vi.stubGlobal("fetch", fetchMock);
+      return fetchMock;
+    }
+
+    it.each(["serve", "setup"])("records %s success without arguments", async (name) => {
+      setupHappyPath();
+      mockRunSetup.mockResolvedValue({
+        WHOOP_MCP_TELEMETRY: "1",
+        WHOOP_MCP_TELEMETRY_ENDPOINT: "https://collector.example/events",
+      });
+      const fetchMock = enableTelemetry();
+      const { runCli } = await import("../src/index.js");
+      expect(await runCli(name === "serve" ? [] : ["setup", "--client-secret", "secret"])).toBe(0);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const options = fetchMock.mock.calls[0]![1] as RequestInit;
+      expect(JSON.parse(options.body as string)).toEqual({
+        schema_version: 1,
+        package_version: expect.any(String),
+        kind: "command",
+        name,
+        outcome: "success",
+      });
+      if (name === "serve")
+        expect(mockCreateWhoopServer).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            telemetry: expect.objectContaining({ record: expect.any(Function) }),
+          })
+        );
+    });
+
+    it.each(["serve", "setup"])("preserves %s failure despite collector failure", async (name) => {
+      setupHappyPath();
+      mockAuthenticate.mockRejectedValue(new Error("authentication secret"));
+      mockRunSetup.mockRejectedValue(new Error("setup secret"));
+      if (name === "serve") mockConnect.mockRejectedValue(new Error("serve secret"));
+      const fetchMock = enableTelemetry().mockRejectedValue(new Error("collector secret"));
+      const { runCli } = await import("../src/index.js");
+      expect(await runCli(name === "serve" ? [] : ["setup"])).toBe(1);
+      if (name === "setup") {
+        expect(fetchMock).not.toHaveBeenCalled();
+        return;
+      }
+      const options = fetchMock.mock.calls[0]![1] as RequestInit;
+      expect(JSON.parse(options.body as string)).toMatchObject({
+        kind: "command",
+        name,
+        outcome: "error",
+      });
+      expect(options.body).not.toContain("secret");
+    });
+
+    it("keeps doctor and telemetry status local even when opted in", async () => {
+      const fetchMock = enableTelemetry();
+      const log = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+      mockRunDoctor.mockResolvedValue(2);
+      const { runCli } = await import("../src/index.js");
+      expect(await runCli(["doctor", "--json"])).toBe(2);
+      expect(mockRunDoctor).toHaveBeenCalledWith(["--json"]);
+      expect(await runCli(["telemetry", "status"])).toBe(0);
+      expect(JSON.parse(log.mock.calls[0]![0] as string)).toEqual({
+        enabled: true,
+        reason: "enabled",
+      });
+      expect(await runCli(["telemetry", "enable"])).toBe(1);
+      expect(mockAuthenticate).not.toHaveBeenCalled();
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it.each([undefined, "1"])(
+      "does not send on default/opt-out configuration: %s",
+      async (optOut) => {
+        setupHappyPath();
+        const fetchMock = enableTelemetry();
+        if (optOut) process.env.DO_NOT_TRACK = optOut;
+        else delete process.env.WHOOP_MCP_TELEMETRY;
+        const { runCli } = await import("../src/index.js");
+        expect(await runCli([])).toBe(0);
+        expect(fetchMock).not.toHaveBeenCalled();
+      }
+    );
   });
 
   // -------------------------------------------------------------------------
@@ -185,6 +296,7 @@ describe("main() entry point", () => {
 
       const { main } = await importMain();
       await main();
+      await getDeferredClient().get("/test");
 
       expect(mockAuthenticate).toHaveBeenCalledOnce();
       expect(mockAuthenticate).toHaveBeenCalledWith(
@@ -200,7 +312,8 @@ describe("main() entry point", () => {
       mockAuthenticate.mockRejectedValue(new Error("OAuth flow failed"));
 
       const { main } = await importMain();
-      await expect(main()).rejects.toThrow("OAuth flow failed");
+      await main();
+      await expect(getDeferredClient().get("/test")).rejects.toThrow("OAuth flow failed");
     });
   });
 
@@ -215,6 +328,7 @@ describe("main() entry point", () => {
 
       const { main } = await importMain();
       await main();
+      await getDeferredClient().get("/test");
 
       expect(mockCreateWhoopClient).toHaveBeenCalledOnce();
       expect(mockCreateWhoopClient).toHaveBeenCalledWith(
@@ -229,6 +343,7 @@ describe("main() entry point", () => {
 
       const { main } = await importMain();
       await main();
+      await getDeferredClient().get("/test");
 
       const clientOptions = mockCreateWhoopClient.mock.calls[0][0] as {
         onTokenRefresh?: () => Promise<string>;
@@ -273,6 +388,7 @@ describe("main() entry point", () => {
 
       const { main } = await importMain();
       await main();
+      await getDeferredClient().get("/test");
 
       // Extract the onTokenRefresh callback
       const clientOptions = mockCreateWhoopClient.mock.calls[0][0] as {
@@ -299,6 +415,7 @@ describe("main() entry point", () => {
 
       const { main } = await importMain();
       await main();
+      await getDeferredClient().get("/test");
 
       const clientOptions = mockCreateWhoopClient.mock.calls[0][0] as {
         onTokenRefresh: () => Promise<string>;
@@ -335,6 +452,7 @@ describe("main() entry point", () => {
 
       const { main } = await importMain();
       await main();
+      await getDeferredClient().get("/test");
 
       // The shared cache is constructed inside main() and passed to the client.
       const clientOptions = mockCreateWhoopClient.mock.calls[0][0] as {
@@ -354,19 +472,71 @@ describe("main() entry point", () => {
   // -------------------------------------------------------------------------
 
   describe("MCP server and stdio transport", () => {
-    it("creates the MCP server with the WHOOP client", async () => {
+    it("connects stdio without waiting for interactive authentication", async () => {
       setupHappyPath();
-      const mockClient = { get: vi.fn() };
-      mockCreateWhoopClient.mockReturnValue(mockClient);
+      let resolveAuthentication: ((token: string) => void) | undefined;
+      mockAuthenticate.mockImplementation(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveAuthentication = resolve;
+          })
+      );
+
+      const { main } = await importMain();
+      const mainPromise = main();
+      try {
+        await new Promise<void>((resolve) => setImmediate(resolve));
+        expect(mockConnect).toHaveBeenCalledOnce();
+      } finally {
+        resolveAuthentication?.("test-access-token");
+        await mainPromise;
+      }
+    });
+
+    it("shares one in-flight authentication across concurrent WHOOP operations", async () => {
+      setupHappyPath();
+      let resolveAuthentication: ((token: string) => void) | undefined;
+      mockAuthenticate.mockImplementation(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveAuthentication = resolve;
+          })
+      );
+      const get = vi.fn().mockResolvedValue({ ok: true });
+      mockCreateWhoopClient.mockReturnValue({ get });
+
+      const { main } = await importMain();
+      await main();
+      const deferredClient = mockCreateWhoopServer.mock.calls[0][0] as {
+        get: (path: string) => Promise<unknown>;
+      };
+
+      const firstRequest = deferredClient.get("/first");
+      const secondRequest = deferredClient.get("/second");
+      expect(mockAuthenticate).toHaveBeenCalledOnce();
+
+      resolveAuthentication?.("test-access-token");
+      await Promise.all([firstRequest, secondRequest]);
+
+      expect(mockCreateWhoopClient).toHaveBeenCalledOnce();
+      expect(get).toHaveBeenCalledTimes(2);
+    });
+
+    it("creates the MCP server with a deferred WHOOP client", async () => {
+      setupHappyPath();
 
       const { main } = await importMain();
       await main();
 
       expect(mockCreateWhoopServer).toHaveBeenCalledOnce();
-      expect(mockCreateWhoopServer).toHaveBeenCalledWith(mockClient, {
-        disableResources: false,
-        privacyMode: "standard",
-      });
+      expect(mockCreateWhoopServer).toHaveBeenCalledWith(
+        expect.objectContaining({ get: expect.any(Function) }),
+        {
+          disableResources: false,
+          privacyMode: "standard",
+        }
+      );
+      expect(mockCreateWhoopClient).not.toHaveBeenCalled();
     });
 
     it("creates a StdioServerTransport", async () => {

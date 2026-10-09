@@ -7,6 +7,190 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-09
+
+### Changed
+- Replaced Buy Me a Chai sponsorship links with the active Buy Me a Coffee
+  profile across setup output, the README, GitHub funding metadata, and
+  contributor messaging.
+- Added a branded Buy Me a Coffee button and updated sponsor link to the public
+  project website.
+- Updated `@modelcontextprotocol/sdk` to `1.32.1`, removing the high-severity
+  OAuth credential-forwarding advisory affecting versions through `1.30.1`.
+- Pinned the collector's transitive `sharp` tooling to `0.35.5` or newer,
+  removing the high-severity librsvg advisory from release CI.
+
+### Verification
+- 934 tests across 51 files pass.
+- Lint, formatting, typecheck, build, package dry-run, and production website
+  checks pass.
+
+## [0.9.0] - 2026-10-06
+
+### Added
+- Successful setup responses now end with an optional sponsor link for every
+  supported client.
+- Added sponsor links to the README, project website, and GitHub funding
+  metadata.
+
+### Fixed
+- The HTTP transport returns 400 Bad Request for a malformed `Host` header or
+  request URL instead of crashing the server process.
+
+### Verification
+- 936 tests across 51 files pass.
+- Lint, formatting, typecheck, and build checks pass.
+- The installed `whoop-ai-mcp@0.9.0` tarball ends setup output with the sponsor
+  link and contains 191 expected files; `npm audit` reports zero vulnerabilities.
+
+## [0.8.4] - 2026-09-23
+
+### Fixed
+- Tool output schemas now advertise JSON Schema 2020-12, restoring Claude
+  Desktop compatibility after its stricter schema-dialect validation.
+- Standard and aggregate privacy modes retain their existing output contracts
+  and runtime validation.
+
+### Verification
+- 890 tests across 48 files pass.
+- Lint, formatting, typecheck, build, and package dry-run checks pass.
+- The package dry-run reports `whoop-ai-mcp@0.8.4` with 191 expected files;
+  `npm audit` reports zero vulnerabilities.
+
+## [0.8.3] - 2026-09-23
+
+### Fixed
+- Refresh grants now include WHOOP's required offline scope, restoring silent
+  refresh of expired access tokens.
+- MCP initialization and tool discovery no longer wait for interactive WHOOP
+  authentication. The WHOOP client authenticates lazily and shares one
+  in-flight authentication.
+- Interactive OAuth is serialized across processes with safe stale-lock
+  recovery, preventing repeated browser windows, fixed-port callback races,
+  and misleading state-mismatch errors.
+- CSRF state and PKCE validation remain intact.
+
+### Verification
+- 890 tests across 48 files pass.
+- Lint, formatting, typecheck, build, and package dry-run checks pass.
+- The package dry-run reports `whoop-ai-mcp@0.8.3` with 191 expected files;
+  `npm audit` reports zero vulnerabilities.
+
+## [0.8.2] - 2026-09-21
+
+### Added
+- Added privacy-safe tool error categories to opted-in telemetry and the private
+  maintainer dashboard. Categories are fixed and coarse; raw errors, response
+  bodies, health values and identifiers remain excluded.
+- Added a row-preserving collector migration that classifies historical tool
+  errors as `unknown` while keeping existing aggregate counts intact.
+
+### Fixed
+- Remote MCP requests now accept verified OAuth connector bearer tokens and
+  attach their authenticated client context to MCP handlers. Invalid or expired
+  tokens continue to return an unauthorized response.
+
+### Verification
+- 882 client tests across 47 files and 83 collector/dashboard tests pass.
+- Client and collector lint, typecheck, formatting and build checks pass.
+- Dashboard rendering was verified at desktop and mobile widths without page
+  overflow, console errors or failed requests.
+
+## [0.8.1] - 2026-09-19
+
+### Changed
+- Reworked the README into a concise, visual introduction with a demo, example
+  questions, a guided quickstart and links to detailed documentation.
+- Moved installation, configuration, tool contracts, privacy, telemetry,
+  troubleshooting, hosting and development guidance into eight topic guides
+  under `references/`.
+- Made installation examples version-independent with `@latest` and linked to
+  the latest release rather than a fixed package version.
+- Updated the public site with consent-based telemetry details, current client
+  setup commands, privacy guidance and links to the new reference guides.
+- Improved site command wrapping and accessible copy feedback on narrow screens.
+
+### Fixed
+- Corrected documentation for pagination, missing measurements, cache behavior,
+  token bootstrap, authenticated health probes and release publication.
+- Removed outdated setup transcripts and clarified collector retention and the
+  maintainer-only dashboard. Preserved the CLI's configuration-help anchor.
+
+No WHOOP API, OAuth, token-storage or telemetry-policy behavior changes.
+
+## [0.8.0] - 2026-09-19
+
+### Added
+- One-time telemetry consent during interactive setup, defaulting to No. The
+  choice is saved in client configuration; `setup --telemetry=on|off` supports
+  explicit scripted choices. Unattended startup remains off without opt-in.
+- Private Cloudflare-hosted usage dashboard with owner-only Access/JWT validation,
+  daily trends, activity rankings, error rates and package-version filters. No
+  unique-user tracking; existing test aggregates remain identified as test activity.
+- Opt-in named MCP prompt-template retrieval counts, with strict allowlists and
+  a row-preserving aggregate migration. No prompt text, arguments or chat content.
+- Opt-in CLI command and MCP tool usage telemetry. Requires
+  `WHOOP_MCP_TELEMETRY=1` and an explicit HTTPS collector URL; no default collector.
+- Local-only `telemetry status` command. `DO_NOT_TRACK=1` and aggregate privacy
+  override opt-in; `doctor` remains strictly local.
+- Strict usage-event allowlists, no health data or identifiers, bounded best-effort
+  delivery, and a hosted-collector release gate covering retention and access logs.
+- Maintainer collector implementation: strict bounded ingestion,
+  aggregate-only D1 counts, identifier-free throttling, and a default-off kill
+  switch. Synthetic and manual Claude Desktop delivery and live storage-failure
+  handling were verified. The owner approved collection for consenting clients
+  at release; synthetic counts were removed and six actual Desktop events preserved.
+
+### Fixed
+- Setup preserves saved telemetry decisions, custom endpoints and privacy settings
+  when credentials change. Invalid optional telemetry endpoints disable collection
+  without blocking setup. Setup failures and explicit opt-outs never send events.
+- Claude Code registration places environment flags before the executable separator.
+
+### Privacy and Operations
+- No default-on tracking, user IDs, installation IDs, chat content, prompt arguments,
+  health data or raw event storage. `DO_NOT_TRACK=1`, explicit opt-out and aggregate
+  privacy suppress collection. Setup supplies the maintainer HTTPS endpoint only
+  after explicit consent; MCP startup does not prompt or assume consent.
+- Collector and dashboard tooling remain outside the npm client artifact. Root
+  runtime dependencies are unchanged. Collector/dashboard CI runs on Node 22;
+  the MCP client remains tested on Node 20 and 22.
+- Upgraded Vitest and its coverage provider together to 4.1.11, resolving the
+  redirect-mock path-traversal advisory (GHSA-82fw-gwwq-j7x9). Full client and
+  private collector dependency audits report zero known vulnerabilities; CI now
+  audits development dependencies too.
+
+### Verification
+- 870 client tests across 47 files and 77 collector/dashboard tests pass.
+- Client line coverage with Vitest 4: 95.40% overall, 98.62% API and 98.54% auth.
+- Lint, typecheck, formatting, build, runtime audit and npm package/publish
+  dry-runs pass. Consent persistence and opt-out regressions received final approval.
+
+## [0.7.1] - 2026-09-19
+
+### Fixed
+- `get_today` now recognizes the current open WHOOP cycle even when it started
+  on the previous local calendar day, restoring current strain and recovery
+  instead of incorrectly reporting stale or missing data (#245).
+- The OAuth authorization and token exchange flows honor
+  `WHOOP_REDIRECT_URI` for HTTP loopback callbacks, with validated host, port,
+  and path matching. `http://localhost:3000/callback` remains the default
+  (#220).
+
+### Changed
+- Refreshed development tooling: `@types/node` 26.5.0, TypeScript ESLint
+  8.69.0, ESLint 10.9.1, Prettier 3.9.6, and `tsx` 4.23.13.
+- Updated GitHub Actions for checkout, Node setup, and Pages configuration,
+  artifact upload, and deployment to their current major releases.
+- Updated the locked Zod runtime dependency from 4.4.3 to 4.5.4 without
+  changing the compatible package range.
+
+### Verification
+- **812 tests** across 43 files pass, including regression tests for overnight
+  open-cycle matching and validated custom OAuth loopback callbacks.
+- Lint, typecheck, build, coverage, production dependency audit, and GitHub
+  Pages deployment pass on the release baseline.
+
 ## [0.7.0] - 2026-09-10
 
 **Trustworthy Personal Analytics**
@@ -191,7 +375,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CLI entry point** — `npx whoop-mcp` with environment variable configuration
 - **202 tests** with full coverage of auth, API client, tools, and error handling
 
-[Unreleased]: https://github.com/shashankswe2020-ux/whoop-mcp/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/shashankswe2020-ux/whoop-mcp/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/shashankswe2020-ux/whoop-mcp/compare/v0.7.1...v0.8.0
+[0.7.1]: https://github.com/shashankswe2020-ux/whoop-mcp/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/shashankswe2020-ux/whoop-mcp/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/shashankswe2020-ux/whoop-mcp/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/shashankswe2020-ux/whoop-mcp/compare/v0.5.2...v0.6.0
