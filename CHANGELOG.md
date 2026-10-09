@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-09
+
+### Changed
+- Replaced Buy Me a Chai sponsorship links with the active Buy Me a Coffee
+  profile across setup output, the README, GitHub funding metadata, and
+  contributor messaging.
+- Added a branded Buy Me a Coffee button and updated sponsor link to the public
+  project website.
+- Updated `@modelcontextprotocol/sdk` to `1.32.1`, removing the high-severity
+  OAuth credential-forwarding advisory affecting versions through `1.30.1`.
+
+### Verification
+- 934 tests across 51 files pass.
+- Lint, formatting, typecheck, build, package dry-run, and production website
+  checks pass.
+
 ## [0.9.0] - 2026-10-06
 
 ### Added
