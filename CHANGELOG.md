@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   project website.
 - Updated `@modelcontextprotocol/sdk` to `1.32.1`, removing the high-severity
   OAuth credential-forwarding advisory affecting versions through `1.30.1`.
+- Pinned the collector's transitive `sharp` tooling to `0.35.5` or newer,
+  removing the high-severity librsvg advisory from release CI.
 
 ### Verification
 - 934 tests across 51 files pass.
